@@ -1,6 +1,10 @@
 # Compiled class file
 *.class
 
+#Maven wrapper
+.mvn/
+MavenWrapperDownloader.java
+
 # Log file
 *.log
 
