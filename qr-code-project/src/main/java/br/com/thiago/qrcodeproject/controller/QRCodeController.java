@@ -1,6 +1,6 @@
 package br.com.thiago.qrcodeproject.controller;
 
-import br.com.thiago.qrcodeproject.generator.QRCodeGenerator;
+import br.com.thiago.qrcodeproject.service.QRCodeGeneratorService;
 import com.google.zxing.WriterException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import java.io.IOException;
 @RestController
 public class QRCodeController {
 
-    private static final String QR_CODE_IMAGE_PATH = "./src/main/resources/QRCode.png";
+    private static final String QR_CODE_IMAGE_PATH = "./src/main/resources/QdddRCode.png";
 
 
     @GetMapping(value = "/genrateAndDownloadQRCode/{codeText}/{width}/{height}")
@@ -24,8 +24,8 @@ public class QRCodeController {
        // codeText ="https://apps.apple.com/br/app/banco-bv/id1494202346";
         //codeText = "https://play.google.com/store/apps/details?id=com.votorantim.bvpd&hl=pt_BR&gl=US";
        // codeText="https://apps.apple.com/br/app/banco-ita%C3%BA/id474505665";
-        codeText ="Arrombadooooo sua bosta";
-        QRCodeGenerator.generateQRCodeImage(codeText, width, height, QR_CODE_IMAGE_PATH);
+        codeText ="Testandooo";
+        QRCodeGeneratorService.generateQRCodeImage(codeText, width, height, QR_CODE_IMAGE_PATH);
     }
 
     @GetMapping(value = "/genrateQRCode/{codeText}/{width}/{height}")
@@ -33,6 +33,18 @@ public class QRCodeController {
             @PathVariable("codeText") String codeText,
             @PathVariable("width") Integer width,
             @PathVariable("height") Integer height) throws IOException, WriterException {
-        return ResponseEntity.status(HttpStatus.OK).body(QRCodeGenerator.getQRCodeImage(codeText, width, height));
+        return ResponseEntity.status(HttpStatus.OK).body(QRCodeGeneratorService.getQRCodeImage(codeText, width, height));
+    }
+
+    @GetMapping("/gerarStringQrCode")
+    public String generateStringQrCode() throws IOException, WriterException {
+        String image = QRCodeGeneratorService.generateStringQrCode();
+        return "A imagem foi criada em: "+image;
+    }
+
+    @GetMapping("/gerarUrlQrCode")
+    public String generateUrlQrCode() throws IOException, WriterException {
+        String image = QRCodeGeneratorService.generateUrlQrCode();
+        return "A imagem foi criada em: "+image;
     }
 }
