@@ -1,0 +1,43 @@
+   public  void generateQRCodeImage(String text, int width, int height, String filePath)
+            throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+
+        Path path = FileSystems.getDefault().getPath(filePath);
+        MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
+
+    }
+    public  byte[] getQRCodeImage(String text, int width, int height) throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        byte[] pngData = pngOutputStream.toByteArray();
+        return pngData;
+    }
+
+    //////////////////////////////// Controller
+
+        private static final String QR_CODE_IMAGE_PATH = "./src/main/resources/ddRCode.png";
+
+
+        @GetMapping(value = "/genrateAndDownloadQRCode/{codeText}/{width}/{height}")
+        public void download(
+                @PathVariable("codeText") String codeText,
+                @PathVariable("width") Integer width,
+                @PathVariable("height") Integer height) throws IOException, WriterException {
+           // codeText ="https://apps.apple.com/br/app/banco-bv/id1494202346";
+            //codeText = "https://play.google.com/store/apps/details?id=com.votorantim.bvpd&hl=pt_BR&gl=US";
+           // codeText="https://apps.apple.com/br/app/banco-ita%C3%BA/id474505665";
+            codeText ="Testandooo";
+            QRCodeGeneratorService.generateQRCodeImage(codeText, width, height, QR_CODE_IMAGE_PATH);
+        }
+
+          @GetMapping(value = "/genrateQRCode/{codeText}/{width}/{height}")
+            public ResponseEntity<byte[]> generateQRCode(
+                    @PathVariable("codeText") String codeText,
+                    @PathVariable("width") Integer width,
+                    @PathVariable("height") Integer height) throws IOException, WriterException {
+                return ResponseEntity.status(HttpStatus.OK).body(QRCodeGeneratorService.getQRCodeImage(codeText, width, height));
+            }
