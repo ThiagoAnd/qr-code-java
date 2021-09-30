@@ -7,30 +7,44 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
+/**
+ * https://github.com/zxing/zxing/wiki/Barcode-Contents
+ */
 @RestController
 public class QRCodeController {
 
-    @GetMapping("/gerarStringQrCode")
+    @GetMapping("/string")
     public String generateStringQrCode() throws IOException, WriterException {
-        String image = QRCodeGeneratorService.generateStringQrCode();
-        return "A imagem foi criada em: "+image;
+        return QRCodeGeneratorService.generateStringQrCode();
     }
 
-    @GetMapping("/gerarUrlQrCode")
+    @GetMapping("/url")
     public String generateUrlQrCode() throws IOException, WriterException {
-        String image = QRCodeGeneratorService.generateUrlQrCode();
-        return "A imagem foi criada em: "+image;
+        return QRCodeGeneratorService.generateUrlQrCode();
     }
 
-    @GetMapping("/gerarWifiQrCode")
+    @GetMapping("/wifi")
     public String generateWifiQrCode() throws IOException, WriterException {
-        String image = QRCodeGeneratorService.generateWifiQrCode();
-        return "A imagem foi criada em: "+image;
+        return QRCodeGeneratorService.generateWifiQrCode();
     }
 
-    @GetMapping("/gerarCallQrCode")
+    @GetMapping("/call")
     public String generateCallQrCode() throws IOException, WriterException {
-        String image = QRCodeGeneratorService.generateLigacaoQrCode();
-        return "A imagem foi criada em: "+image;
+        return QRCodeGeneratorService.generateCallQrCode();
+    }
+
+    @GetMapping("/email")
+    public String generateEmailQrCode() throws IOException, WriterException {
+        return QRCodeGeneratorService.generateEmailQrCode();
+    }
+
+    @GetMapping("/sms")
+    public String generateSmsQrCode() throws IOException, WriterException {
+        return QRCodeGeneratorService.generateSmsQrCode();
+    }
+
+    @GetMapping("/map")
+    public String generateMapQrCode() throws IOException, WriterException {
+        return QRCodeGeneratorService.generateMapQrCode();
     }
 }
