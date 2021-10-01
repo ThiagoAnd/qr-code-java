@@ -1,5 +1,6 @@
 package br.com.thiago.qrcodeproject.service;
 
+import br.com.thiago.qrcodeproject.util.QrCodeMapper;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -7,12 +8,12 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.experimental.UtilityClass;
 
-import static java.lang.String.format;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+
+import static java.lang.String.format;
 
 @UtilityClass
 public class QRCodeGeneratorService {
@@ -47,6 +48,8 @@ public class QRCodeGeneratorService {
     }
 
     public static String generateWifiQrCode() throws IOException, WriterException {
+//        String EncodingString = "WIFI:S:%s;T:%s;P:%s;H:%s;";
+//        EncodingString = format(EncodingString, ssid, security, password, isHidden);
         var wifiLogin = "WIFI:T:WPA;S:NOMEREDE;P:SENHA;;";
 
         return generateBaseQrCode(wifiLogin, QR_CODE_WIFI_IMAGE);
@@ -76,6 +79,8 @@ public class QRCodeGeneratorService {
     }
 
     public static String generateSmsQrCode() throws IOException, WriterException {
+//        String EncodingString = "smsto:%s:%s";
+//        EncodingString = format(EncodingString, PhoneNumber, Text);
         String smsSimples = "sms:+5541997710000";
         //Este exemplo não funciona. Verificar String smsETexto = "sms:+18005551212:This%20is%20my%20text%20message.";
 
@@ -92,7 +97,7 @@ public class QRCodeGeneratorService {
     }
 
     public static String generateCalendarQrCode() throws IOException, WriterException {
-        String EncodingString = "BEGIN:VEVENT\n"
+        String evento = "BEGIN:VEVENT\n"
                 + "SUMMARY:%s\n"
                 + "DTSTART:%s\n"
                 + "DTEND:%s\n"
@@ -100,37 +105,38 @@ public class QRCodeGeneratorService {
                 + "DESCRIPTION:%s\n"
                 + "END:VEVENT";
 
+        String x = "BEGIN:VCALENDAR\n" +
+                "VERSION:1.0\n" +
+                "BEGIN:VEVENT\n" +
+                "CATEGORIES:MEETING\n" +
+                "STATUS:TENTATIVE\n" +
+                "DTSTART:19960401T033000Z\n" +
+                "DTEND:19960401T043000Z\n" +
+                "SUMMARY:Your Proposal Review\n" +
+                "DESCRIPTION:Steve and John to review newest proposal material\n" +
+                "CLASS:PRIVATE\n" +
+                "END:VEVENT\n" +
+                "END:VCALENDAR";
+
+
+
 
         String calendar = "BEGIN:VALARM;" +
                 "TRIGGER:-PT1440M;" +
                 "ACTION:DISPLAY;" +
                 "DESCRIPTION:Reminder;" +
                 "END:VALARM";
-        return generateBaseQrCode(calendar, QR_CODE_CALENDAR_IMAGE);
+        return generateBaseQrCode(x, QR_CODE_CALENDAR_IMAGE);
     }
 
     public static String generateVCardQrCode() throws IOException, WriterException {
-        String vcard = "BEGIN:VCARD\n"
-                + "VERSION:4.0\n"
-                + "N:%s\n"
-                + "ORG:%s\n"
-                + "TITLE:%s\n"
-                + "TEL:%s\n"
-                + "URL:%s\n"
-                + "EMAIL:%s\n"
-                + "ADR:%s\n"
-                + "END:VCARD\n";
-        vcard = format(vcard,
-                "Thiago",
-                "Empresa Google",
-                "Desenvolvedor",
-                "41997719771",
-                "github/thiagoand",
-                "thiago@gmail.com",
-                "rua mexico 250, bacacheri, Curitiba"
-                );
 
-        return generateBaseQrCode(vcard, QR_CODE_VCARD_IMAGE);
+       String vCard = QrCodeMapper.vCardParser("Thiago Andrade", "Google",
+                                    "Desenvolvedor", "+5541997719771",
+                                    "github/thiagoand", "s4lezardv@gmail.com",
+                                    "Rua Medico, numero 248,Curitiba,Parana");
+
+        return generateBaseQrCode(vCard, QR_CODE_VCARD_IMAGE);
     }
 
 

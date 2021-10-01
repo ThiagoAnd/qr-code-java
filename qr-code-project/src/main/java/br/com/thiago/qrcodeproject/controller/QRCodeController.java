@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 /**
- * https://github.com/zxing/zxing/wiki/Barcode-Contents
+ * <h3>Para maiores informações sobre a lib:</h3>
+ * <a href="https://github.com/zxing/zxing/wiki/Barcode-Contents">Github ZXing</a>
  */
 @RestController
 public class QRCodeController {
