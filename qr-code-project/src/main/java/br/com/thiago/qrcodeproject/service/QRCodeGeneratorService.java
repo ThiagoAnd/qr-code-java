@@ -7,6 +7,8 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.experimental.UtilityClass;
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -25,9 +27,10 @@ public class QRCodeGeneratorService {
     private final String QR_CODE_VCARD_IMAGE = "./src/main/resources/QrCodeVCardImage.png";
     private final String QR_CODE_SMS_IMAGE = "./src/main/resources/QrCodeSmsImage.png";
     private final String QR_CODE_MAP_IMAGE = "./src/main/resources/QrCodeMapImage.png";
+    private final String QR_CODE_CALENDAR_IMAGE = "./src/main/resources/QrCodeCalendarImage.png";
 
 
-    public  String generateStringQrCode() throws WriterException, IOException {
+    public String generateStringQrCode() throws WriterException, IOException {
         var msg = "Teste de mensagem utilizando QRCode";
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(msg, BarcodeFormat.QR_CODE, WIDTH, HEIGHT);
@@ -36,7 +39,7 @@ public class QRCodeGeneratorService {
         return new File(QR_CODE_STRING_IMAGE).getAbsolutePath();
     }
 
-    public  String generateUrlQrCode() throws WriterException, IOException {
+    public String generateUrlQrCode() throws WriterException, IOException {
         //var urlAndroid = "https://play.google.com/store/apps/details?id=com.votorantim.bvpd&hl=pt_BR&gl=US";
         var urlIphone = "https://apps.apple.com/br/app/banco-ita%C3%BA/id474505665";
 
@@ -61,7 +64,6 @@ public class QRCodeGeneratorService {
      * CC: Carbon Copy(copia para alguem)
      * BCC: Blind Carbon Copy (copia invisivel para alguem)
      * Body: Corpo do email
-     *
      */
     public static String generateEmailQrCode() throws IOException, WriterException {
 
@@ -81,18 +83,58 @@ public class QRCodeGeneratorService {
     }
 
     /**
-     *Existem mais parametros para cada tipo de celular com ios ou android
-     *latitude,longitude,distancia de zoom (testar um pouco melhor)
+     * Existem mais parametros para cada tipo de celular com ios ou android
+     * latitude,longitude,distancia de zoom (testar um pouco melhor)
      */
     public static String generateMapQrCode() throws IOException, WriterException {
         String mapaSimples = "geo:40.71872,-73.98905,100";
-
         return generateBaseQrCode(mapaSimples, QR_CODE_MAP_IMAGE);
     }
 
+    public static String generateCalendarQrCode() throws IOException, WriterException {
+        String EncodingString = "BEGIN:VEVENT\n"
+                + "SUMMARY:%s\n"
+                + "DTSTART:%s\n"
+                + "DTEND:%s\n"
+                + "LOCATION:%s\n"
+                + "DESCRIPTION:%s\n"
+                + "END:VEVENT";
 
 
-    private String generateBaseQrCode(String conteudo,String arquivo) throws IOException, WriterException {
+        String calendar = "BEGIN:VALARM;" +
+                "TRIGGER:-PT1440M;" +
+                "ACTION:DISPLAY;" +
+                "DESCRIPTION:Reminder;" +
+                "END:VALARM";
+        return generateBaseQrCode(calendar, QR_CODE_CALENDAR_IMAGE);
+    }
+
+    public static String generateVCardQrCode() throws IOException, WriterException {
+        String vcard = "BEGIN:VCARD\n"
+                + "VERSION:4.0\n"
+                + "N:%s\n"
+                + "ORG:%s\n"
+                + "TITLE:%s\n"
+                + "TEL:%s\n"
+                + "URL:%s\n"
+                + "EMAIL:%s\n"
+                + "ADR:%s\n"
+                + "END:VCARD\n";
+        vcard = format(vcard,
+                "Thiago",
+                "Empresa Google",
+                "Desenvolvedor",
+                "41997719771",
+                "github/thiagoand",
+                "thiago@gmail.com",
+                "rua mexico 250, bacacheri, Curitiba"
+                );
+
+        return generateBaseQrCode(vcard, QR_CODE_VCARD_IMAGE);
+    }
+
+
+    private String generateBaseQrCode(String conteudo, String arquivo) throws IOException, WriterException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(conteudo, BarcodeFormat.QR_CODE, WIDTH, HEIGHT);
         Path path = FileSystems.getDefault().getPath(arquivo);

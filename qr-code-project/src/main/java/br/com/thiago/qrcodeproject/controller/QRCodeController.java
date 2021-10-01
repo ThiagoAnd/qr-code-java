@@ -47,4 +47,14 @@ public class QRCodeController {
     public String generateMapQrCode() throws IOException, WriterException {
         return QRCodeGeneratorService.generateMapQrCode();
     }
+
+    @GetMapping("/calendar")
+    public String generateCalendarQrCode() throws IOException, WriterException {
+        return QRCodeGeneratorService.generateCalendarQrCode();
+    }
+
+    @GetMapping("/vcard")
+    public String generateVCardQrCode() throws IOException, WriterException {
+        return QRCodeGeneratorService.generateVCardQrCode();
+    }
 }
