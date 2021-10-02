@@ -41,3 +41,10 @@
                     @PathVariable("height") Integer height) throws IOException, WriterException {
                 return ResponseEntity.status(HttpStatus.OK).body(QRCodeGeneratorService.getQRCodeImage(codeText, width, height));
             }
+
+
+////////////////////////////
+
+Service:
+
+        String urlAndroid = "https://play.google.com/store/apps/details?id=com.votorantim.bvpd&hl=pt_BR&gl=US";

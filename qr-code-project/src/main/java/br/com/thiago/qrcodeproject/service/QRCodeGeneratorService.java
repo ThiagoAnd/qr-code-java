@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
-import static java.lang.String.format;
-
 @UtilityClass
 public class QRCodeGeneratorService {
 
@@ -32,27 +30,18 @@ public class QRCodeGeneratorService {
 
 
     public String generateStringQrCode() throws WriterException, IOException {
-        var msg = "Teste de mensagem utilizando QRCode";
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(msg, BarcodeFormat.QR_CODE, WIDTH, HEIGHT);
-        Path path = FileSystems.getDefault().getPath(QR_CODE_STRING_IMAGE);
-        MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
-        return new File(QR_CODE_STRING_IMAGE).getAbsolutePath();
+        String msg = "Teste de mensagem utilizando QRCode";
+        return generateBaseQrCode(msg, QR_CODE_STRING_IMAGE);
     }
 
     public String generateUrlQrCode() throws WriterException, IOException {
-        //var urlAndroid = "https://play.google.com/store/apps/details?id=com.votorantim.bvpd&hl=pt_BR&gl=US";
-        var urlIphone = "https://apps.apple.com/br/app/banco-ita%C3%BA/id474505665";
-
+        String urlIphone = "https://apps.apple.com/br/app/banco-ita%C3%BA/id474505665";
         return generateBaseQrCode(urlIphone, QR_CODE_URL_IMAGE);
     }
 
     public static String generateWifiQrCode() throws IOException, WriterException {
-//        String EncodingString = "WIFI:S:%s;T:%s;P:%s;H:%s;";
-//        EncodingString = format(EncodingString, ssid, security, password, isHidden);
-        var wifiLogin = "WIFI:T:WPA;S:NOMEREDE;P:SENHA;;";
-
-        return generateBaseQrCode(wifiLogin, QR_CODE_WIFI_IMAGE);
+        String wifi = QrCodeMapper.wifiParser("WPA", "NomeDaRede", "Senha", false);
+        return generateBaseQrCode(wifi, QR_CODE_WIFI_IMAGE);
     }
 
     public static String generateCallQrCode() throws IOException, WriterException {
@@ -70,21 +59,17 @@ public class QRCodeGeneratorService {
      */
     public static String generateEmailQrCode() throws IOException, WriterException {
 
-        //String emailSimples = "mailto:s4lezardv@gmail.com";
-        String emailEAssunto = "mailto:thiago@gmail.com?subject=Assunto do email aqui";
         //String emailEAssuntoECCEBCC = "mailto:thiago@gmail.com?cc=pedro@gmail.com,rodrigo@outlook.com&bcc=emailescondido@gmail.comm&subject=Assunto do email aqui";
         //String emailEAssuntoECCEBCCECorpo = "mailto:thiago@gmail.com?cc=pedro@gmail.com,rodrigo@outlook.com&bcc=emailescondido@gmail.comm&subject=Assunto do email aqui&body=<h1>Corpo do email</h1><br>Aqui aceita <strong>HTML</strong>";
-
-        return generateBaseQrCode(emailEAssunto, QR_CODE_EMAIL_IMAGE);
+        String simpleEmail = QrCodeMapper.simpleEmailParser("s4lezardv@gmail.com");
+        String normalEmail = QrCodeMapper.normalEmailParser("s4lezardv@gmail.com", "Assunto do email");
+        return generateBaseQrCode(simpleEmail, QR_CODE_EMAIL_IMAGE);
     }
 
-    public static String generateSmsQrCode() throws IOException, WriterException {
-//        String EncodingString = "smsto:%s:%s";
-//        EncodingString = format(EncodingString, PhoneNumber, Text);
-        String smsSimples = "sms:+5541997710000";
-        //Este exemplo não funciona. Verificar String smsETexto = "sms:+18005551212:This%20is%20my%20text%20message.";
 
-        return generateBaseQrCode(smsSimples, QR_CODE_SMS_IMAGE);
+    public static String generateSmsQrCode() throws IOException, WriterException {
+        String sms = QrCodeMapper.smsParser("+5541997719771", "Texto de exemplo");
+        return generateBaseQrCode(sms, QR_CODE_SMS_IMAGE);
     }
 
     /**
@@ -119,8 +104,6 @@ public class QRCodeGeneratorService {
                 "END:VCALENDAR";
 
 
-
-
         String calendar = "BEGIN:VALARM;" +
                 "TRIGGER:-PT1440M;" +
                 "ACTION:DISPLAY;" +
@@ -131,10 +114,10 @@ public class QRCodeGeneratorService {
 
     public static String generateVCardQrCode() throws IOException, WriterException {
 
-       String vCard = QrCodeMapper.vCardParser("Thiago Andrade", "Google",
-                                    "Desenvolvedor", "+5541997719771",
-                                    "github/thiagoand", "s4lezardv@gmail.com",
-                                    "Rua Medico, numero 248,Curitiba,Parana");
+        String vCard = QrCodeMapper.vCardParser("Thiago Andrade", "Google",
+                "Desenvolvedor", "+5541997719771",
+                "github/thiagoand", "s4lezardv@gmail.com",
+                "Rua Medico, numero 248,Curitiba,Parana");
 
         return generateBaseQrCode(vCard, QR_CODE_VCARD_IMAGE);
     }
