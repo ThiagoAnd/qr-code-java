@@ -7,13 +7,14 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
-@UtilityClass
+@Service
 public class QRCodeGeneratorService {
 
     private final int WIDTH = 650;
@@ -39,12 +40,13 @@ public class QRCodeGeneratorService {
         return generateBaseQrCode(urlIphone, QR_CODE_URL_IMAGE);
     }
 
-    public static String generateWifiQrCode() throws IOException, WriterException {
+    public String generateWifiQrCode() throws IOException, WriterException {
         String wifi = QrCodeMapper.wifiParser("WPA", "NomeDaRede", "Senha", false);
+
         return generateBaseQrCode(wifi, QR_CODE_WIFI_IMAGE);
     }
 
-    public static String generateCallQrCode() throws IOException, WriterException {
+    public String generateCallQrCode() throws IOException, WriterException {
         var ligacaoEConteudo = " 4199771-9771\nThiago de Andrade";
         //var ligacaoComum = "41997713790";
 
@@ -57,7 +59,7 @@ public class QRCodeGeneratorService {
      * BCC: Blind Carbon Copy (copia invisivel para alguem)
      * Body: Corpo do email
      */
-    public static String generateEmailQrCode() throws IOException, WriterException {
+    public String generateEmailQrCode() throws IOException, WriterException {
 
         //String emailEAssuntoECCEBCC = "mailto:thiago@gmail.com?cc=pedro@gmail.com,rodrigo@outlook.com&bcc=emailescondido@gmail.comm&subject=Assunto do email aqui";
         //String emailEAssuntoECCEBCCECorpo = "mailto:thiago@gmail.com?cc=pedro@gmail.com,rodrigo@outlook.com&bcc=emailescondido@gmail.comm&subject=Assunto do email aqui&body=<h1>Corpo do email</h1><br>Aqui aceita <strong>HTML</strong>";
@@ -67,7 +69,7 @@ public class QRCodeGeneratorService {
     }
 
 
-    public static String generateSmsQrCode() throws IOException, WriterException {
+    public String generateSmsQrCode() throws IOException, WriterException {
         String sms = QrCodeMapper.smsParser("+5541997719771", "Texto de exemplo");
         return generateBaseQrCode(sms, QR_CODE_SMS_IMAGE);
     }
@@ -76,12 +78,12 @@ public class QRCodeGeneratorService {
      * Existem mais parametros para cada tipo de celular com ios ou android
      * latitude,longitude,distancia de zoom (testar um pouco melhor)
      */
-    public static String generateMapQrCode() throws IOException, WriterException {
+    public String generateMapQrCode() throws IOException, WriterException {
         String mapaSimples = "geo:40.71872,-73.98905,100";
         return generateBaseQrCode(mapaSimples, QR_CODE_MAP_IMAGE);
     }
 
-    public static String generateCalendarQrCode() throws IOException, WriterException {
+    public String generateCalendarQrCode() throws IOException, WriterException {
         String evento = "BEGIN:VEVENT\n"
                 + "SUMMARY:%s\n"
                 + "DTSTART:%s\n"
@@ -112,7 +114,7 @@ public class QRCodeGeneratorService {
         return generateBaseQrCode(x, QR_CODE_CALENDAR_IMAGE);
     }
 
-    public static String generateVCardQrCode() throws IOException, WriterException {
+    public String generateVCardQrCode() throws IOException, WriterException {
 
         String vCard = QrCodeMapper.vCardParser("Thiago Andrade", "Google",
                 "Desenvolvedor", "+5541997719771",

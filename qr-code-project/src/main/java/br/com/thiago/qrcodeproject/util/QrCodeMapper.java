@@ -11,8 +11,9 @@ import static java.lang.String.format;
 public class QrCodeMapper {
 
     public String wifiParser(String ssid, String seguranca, String password, Boolean estaEscondido) {
-        String wifiTemplate = "WIFI:S:%s;T:%s;P:%s;H:%s;";
-        return format(wifiTemplate, ssid, seguranca, password, estaEscondido);
+        String wifiTemplate = "WIFI:T:%s;S:%s;P:%s;H:%s;";
+        //return "WIFI:T:WPA;S:NOMEREDE;P:SENHA;H:false;";
+        return format(wifiTemplate, seguranca, ssid, password, estaEscondido);
     }
 
     public String simpleEmailParser(String email) {
@@ -26,11 +27,11 @@ public class QrCodeMapper {
     }
 
     //TODO Fazer o compostEmail e o compostComCorpo. Precisa tratar o array.
-    public String compostEmailParser(String, email, String[] copia, String copiaEscondida, String assunto) {
-        String compostEmailParser = "MAILTO:%s?CC=";
-        //String emailEAssuntoECCEBCC = "mailto:thiago@gmail.com?cc=pedro@gmail.com,rodrigo@outlook.com&bcc=emailescondido@gmail.comm&subject=Assunto do email aqui";
-
-    }
+    //public String compostEmailParser(String, email, String[] copia, String copiaEscondida, String assunto) {
+//        String compostEmailParser = "MAILTO:%s?CC=";
+//        //String emailEAssuntoECCEBCC = "mailto:thiago@gmail.com?cc=pedro@gmail.com,rodrigo@outlook.com&bcc=emailescondido@gmail.comm&subject=Assunto do email aqui";
+//
+//    }
 
     public String smsParser(String fone, String texto) {
         String EncodingString = "SMSTO:%s:%s";
