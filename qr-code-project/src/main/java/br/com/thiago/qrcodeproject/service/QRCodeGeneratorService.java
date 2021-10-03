@@ -4,15 +4,24 @@ import br.com.thiago.qrcodeproject.util.QrCodeMapper;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.client.result.CalendarParsedResult;
+import com.google.zxing.client.result.TelParsedResult;
+import com.google.zxing.client.result.TelResultParser;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import lombok.experimental.UtilityClass;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Service
 public class QRCodeGeneratorService {
@@ -42,68 +51,51 @@ public class QRCodeGeneratorService {
 
     public String generateWifiQrCode() throws IOException, WriterException {
         String wifi = QrCodeMapper.wifiParser("WPA", "NomeDaRede", "Senha", false);
-
         return generateBaseQrCode(wifi, QR_CODE_WIFI_IMAGE);
     }
 
     public String generateCallQrCode() throws IOException, WriterException {
-        var ligacaoEConteudo = " 4199771-9771\nThiago de Andrade";
-        //var ligacaoComum = "41997713790";
-
-        return generateBaseQrCode(ligacaoEConteudo, QR_CODE_CALL_IMAGE);
+        String call = "Thiago de Andrade\n\n+5541997719771";
+        return generateBaseQrCode(call, QR_CODE_CALL_IMAGE);
     }
 
-    /**
-     * Subject: Assunto
-     * CC: Carbon Copy(copia para alguem)
-     * BCC: Blind Carbon Copy (copia invisivel para alguem)
-     * Body: Corpo do email
-     */
     public String generateEmailQrCode() throws IOException, WriterException {
-
-        //String emailEAssuntoECCEBCC = "mailto:thiago@gmail.com?cc=pedro@gmail.com,rodrigo@outlook.com&bcc=emailescondido@gmail.comm&subject=Assunto do email aqui";
-        //String emailEAssuntoECCEBCCECorpo = "mailto:thiago@gmail.com?cc=pedro@gmail.com,rodrigo@outlook.com&bcc=emailescondido@gmail.comm&subject=Assunto do email aqui&body=<h1>Corpo do email</h1><br>Aqui aceita <strong>HTML</strong>";
         String simpleEmail = QrCodeMapper.simpleEmailParser("s4lezardv@gmail.com");
-        String normalEmail = QrCodeMapper.normalEmailParser("s4lezardv@gmail.com", "Assunto do email");
-        return generateBaseQrCode(simpleEmail, QR_CODE_EMAIL_IMAGE);
+        String normalEmail = QrCodeMapper.normalEmailParser("s4lezardv@gmail.com", "Assunto do email", "<h1>Inicio do email</h1><br><p>paragrafo do email</p>");
+        String fowardEmail = QrCodeMapper.fowardEmailParser("s4lezardv@gmail.com", "email1@gmail.com", "email2@gmail.com", "emailOculto@gmail.com");
+        return generateBaseQrCode(normalEmail, QR_CODE_EMAIL_IMAGE);
     }
-
 
     public String generateSmsQrCode() throws IOException, WriterException {
         String sms = QrCodeMapper.smsParser("+5541997719771", "Texto de exemplo");
         return generateBaseQrCode(sms, QR_CODE_SMS_IMAGE);
     }
 
-    /**
-     * Existem mais parametros para cada tipo de celular com ios ou android
-     * latitude,longitude,distancia de zoom (testar um pouco melhor)
-     */
     public String generateMapQrCode() throws IOException, WriterException {
-        String mapaSimples = "geo:40.71872,-73.98905,100";
-        return generateBaseQrCode(mapaSimples, QR_CODE_MAP_IMAGE);
+        String map = QrCodeMapper.mapParser("25.48766", "-73.98905", "100");
+        return generateBaseQrCode(map, QR_CODE_MAP_IMAGE);
     }
 
     public String generateCalendarQrCode() throws IOException, WriterException {
-        String evento = "BEGIN:VEVENT\n"
-                + "SUMMARY:%s\n"
-                + "DTSTART:%s\n"
-                + "DTEND:%s\n"
-                + "LOCATION:%s\n"
-                + "DESCRIPTION:%s\n"
-                + "END:VEVENT";
+    var x = LocalDate.parse("04/10/2021", DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        System.out.println(x);
+        var y = LocalTime.parse("12:30",DateTimeFormatter.ofPattern("HH:mm"));
+        System.out.println(y);
 
-        String x = "BEGIN:VCALENDAR\n" +
-                "VERSION:1.0\n" +
-                "BEGIN:VEVENT\n" +
-                "CATEGORIES:MEETING\n" +
-                "STATUS:TENTATIVE\n" +
-                "DTSTART:19960401T033000Z\n" +
-                "DTEND:19960401T043000Z\n" +
-                "SUMMARY:Your Proposal Review\n" +
-                "DESCRIPTION:Steve and John to review newest proposal material\n" +
+        String evento = "BEGIN:VEVENT\n" +
+                "SUMMARY:Testando o titulo dddo calendario\n" +
+                "DESCRIPTION:Teste de descrição de calendario\n"+
                 "CLASS:PRIVATE\n" +
-                "END:VEVENT\n" +
-                "END:VCALENDAR";
+                "CATEGORIES:MEETING\n" +
+                "ORGANIZER:mailto:jane_doe@example.com\n" +
+                "ATTENDEE:mailto:john_public@example.com\n"+
+                "URL:http://github/thiagoand\n"+
+                "DTSTART:20180601T070000Z\n" +
+                "DTEND:20180831T070000Z\n" +
+                "END:VEVENT\n";
+
+
+
 
 
         String calendar = "BEGIN:VALARM;" +
@@ -111,7 +103,7 @@ public class QRCodeGeneratorService {
                 "ACTION:DISPLAY;" +
                 "DESCRIPTION:Reminder;" +
                 "END:VALARM";
-        return generateBaseQrCode(x, QR_CODE_CALENDAR_IMAGE);
+        return generateBaseQrCode(evento, QR_CODE_CALENDAR_IMAGE);
     }
 
     public String generateVCardQrCode() throws IOException, WriterException {
@@ -132,4 +124,5 @@ public class QRCodeGeneratorService {
         MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
         return new File(arquivo).getAbsolutePath();
     }
+
 }
