@@ -1,7 +1,7 @@
-<h1 align="center">
+<div align="center">
    <img src="./qr-code-project/docs/zxing_logo.jpg" width="300" />
-</h1>
-<br><br><br><br>
+</div>
+<br>
 
 # Overview
 
