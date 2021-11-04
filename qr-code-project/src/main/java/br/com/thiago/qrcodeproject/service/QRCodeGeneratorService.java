@@ -34,7 +34,7 @@ public class QRCodeGeneratorService {
 
 
     public String generateStringQrCode() throws WriterException, IOException {
-        String msg = "Teste de mensagem utilizando QRCode";
+        String msg = "Me add no github galera!!! ThiagoAnd";
         return generateBaseQrCode(msg, QR_CODE_STRING_IMAGE);
     }
 
